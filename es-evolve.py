@@ -95,17 +95,17 @@ def main():
     )
     start = time.time()
     final_weights = es.run(args.iter)
-    end = time.time() - start
 
     # Make directory for saving
     os.makedirs('models', exist_ok=True)
 
-    filename = 'models/' + args.env + '.dat'
+    reward = partial_func(final_weights)
+    filename = 'models/%s%+.3f' % (args.env, reward)
+    print('Saving %s' % filename)
     torch.save(final_weights, open(filename, 'wb'))
 
-    reward = partial_func(final_weights, render=True)
-    print(f'Reward from final weights: {reward}')
-    print(f'Time to completion: {end}')
+    #reward = partial_func(final_weights, render=True)
+    #print(f'Reward from final weights: {reward}')
 
 if __name__ == '__main__':
     main()
