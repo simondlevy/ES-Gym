@@ -16,7 +16,7 @@ class _NetWithActfun(nn.Sequential):
 
         nn.Sequential.__init__(self, *args)
 
-class ArgmaxNet(_NetWithActfun):
+class ArgMaxNet(_NetWithActfun):
 
     def __init__(self, *args):
 

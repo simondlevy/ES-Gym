@@ -12,17 +12,15 @@ import copy
 from functools import partial
 import logging
 import os
-import time
 
-import gym
 from gym import logger as gym_logger
 import numpy as np
 import torch
-from torch.autograd import Variable
 import torch.nn as nn
 
 from pytorch_es import EvolutionModule
-from pytorch_es.nets import ArgmaxNet, ClipNet
+from pytorch_es.utils.helpers import run_net
+from pytorch_es.nets import ArgMaxNet, ClipNet
 
 def main():
 
@@ -71,22 +69,7 @@ def main():
 
         copy_weights_to_net(weights, cloned_net)
 
-        env = gym.make(args.env)
-        ob = env.reset()
-        done = False
-        total_reward = 0
-        while not done:
-            batch = torch.from_numpy(ob[np.newaxis,...]).float()
-            if cuda:
-                batch = batch.cuda()
-            prediction = cloned_net(Variable(batch))
-            action = net.actfun(prediction.data.numpy()[0])
-            ob, reward, done, _ = env.step(action)
-
-            total_reward += reward 
-
-        env.close()
-        return total_reward
+        return run_net(cloned_net, args.env)
         
     partial_func = partial(get_reward, net=net)
     mother_parameters = list(net.parameters())
