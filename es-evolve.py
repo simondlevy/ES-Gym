@@ -82,10 +82,10 @@ def main():
     final_weights = es.run(args.iter)
 
     # Save final weights in a new network, along with environment name
-    os.makedirs('solutions', exist_ok=True)
+    os.makedirs('models', exist_ok=True)
     reward = partial_func(final_weights)
     copy_weights_to_net(final_weights, net)
-    filename = 'solutions/%s%+.3f.dat' % (args.env, reward)
+    filename = 'models/%s%+.3f.dat' % (args.env, reward)
     print('Saving %s' % filename)
     torch.save((net,args.env), open(filename, 'wb'))
 
