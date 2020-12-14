@@ -11,4 +11,4 @@ net = ArgMaxNet(
     nn.Linear(4, 100),
     nn.ReLU(True),
     nn.Linear(100, 2),
-    nn.Softmax())
+    nn.Softmax(dim=-1))
