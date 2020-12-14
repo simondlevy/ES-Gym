@@ -27,7 +27,7 @@ def main():
     gym_logger.setLevel(logging.CRITICAL)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-w', '--weights_path', type=str, required=True, help='Path to save final weights')
+    parser.add_argument('--env', default='CartPole-v0', help='Environment id')
     parser.add_argument('--cuda', action='store_true', help='Whether or not to use CUDA')
     parser.add_argument('--pop', type=int, default=5, help='Population size')
     parser.add_argument('--sigma', type=float, default=0.1, help='Sigma')
@@ -64,7 +64,7 @@ def main():
             except:
                 param.data.copy_(weights[i].data)
 
-        env = gym.make('CartPole-v0')
+        env = gym.make(args.env)
         ob = env.reset()
         done = False
         total_reward = 0
@@ -96,7 +96,11 @@ def main():
     final_weights = es.run(400)
     end = time.time() - start
 
-    torch.save(final_weights, open(os.path.abspath(args.weights_path), 'wb'))
+    # Make directory for saving
+    os.makedirs('models', exist_ok=True)
+
+    filename = 'models/' + args.env + '.dat'
+    torch.save(final_weights, open(filename, 'wb'))
 
     reward = partial_func(final_weights, render=True)
     print(f'Reward from final weights: {reward}')
