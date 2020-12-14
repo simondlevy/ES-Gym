@@ -8,7 +8,7 @@ MIT License
 '''
 
 import argparse
-import pickle
+import torch
 
 def main():
 
@@ -19,20 +19,13 @@ def main():
     args = parser.parse_args()
 
     # Load net and environment name from pickled file
-    net, env_name = pickle.load(open(args.filename, 'rb'))
+    net, env_name = torch.load(open(args.filename, 'rb'))
+
+    print(net)
+    print()
+    print(env_name)
 
     '''
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    args = parser.parse_args()
-
-    cuda = False
-
-    if args.cuda:
-        if torch.cuda.is_available():
-            cuda = True
-        else:
-            print('******* Sorry, CUDA not available *******')
-
     # Run code in script named by environment
     code = open('./nets/%s.py'% args.env).read() 
     ldict = {}
