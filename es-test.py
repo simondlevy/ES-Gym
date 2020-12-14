@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-ES evolver script for OpenAI Gym environemnts
+ES tester script for OpenAI Gym environemnts
 
 Copyright (C) 2020 Richard Herbert and Simon D. Levy
 
@@ -8,34 +8,21 @@ MIT License
 '''
 
 import argparse
-import copy
-from functools import partial
-import logging
-import os
-import time
-
-from pytorch_es import EvolutionModule
-import gym
-from gym import logger as gym_logger
-import numpy as np
-import torch
-from torch.autograd import Variable
-import torch.nn as nn
+import pickle
 
 def main():
 
-    gym_logger.setLevel(logging.CRITICAL)
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filename', metavar='FILENAME', help='input file')
+    parser.add_argument('--record', default=None, help='If specified, sets the recording dir')
+    args = parser.parse_args()
 
+    # Load net and environment name from pickled file
+    net, env_name = pickle.load(open(args.filename, 'rb'))
+
+    '''
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--env', default='CartPole-v0', help='Environment id')
-    parser.add_argument('--cuda', action='store_true', help='Whether or not to use CUDA')
-    parser.add_argument('--pop', type=int, default=5, help='Population size')
-    parser.add_argument('--iter', type=int, default=400, help='Iterations')
-    parser.add_argument('--sigma', type=float, default=0.1, help='Sigma')
-    parser.add_argument('--lr', type=float, default=0.001, help='Learning rate')
-    parser.add_argument('--threads', type=int, default=15, help='Thread count')
-    parser.add_argument('--target', type=float, default=-np.inf, help='Reward target')
-    parser.add_argument('--csg', type=int, default=10, help='Consecutive goal stopping')
     args = parser.parse_args()
 
     cuda = False
@@ -109,6 +96,7 @@ def main():
 
     #reward = partial_func(final_weights, render=True)
     #print(f'Reward from final weights: {reward}')
+    '''
 
 if __name__ == '__main__':
     main()
