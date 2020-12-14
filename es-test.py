@@ -38,7 +38,7 @@ def main():
         time.sleep(0.02)
         batch = torch.from_numpy(ob[np.newaxis,...]).float()
         prediction = net(Variable(batch))
-        action = net.actfun(prediction.data.numpy())
+        action = net.actfun(prediction.data.numpy()[0])
         ob, reward, done, _ = env.step(action)
 
         total_reward += reward 

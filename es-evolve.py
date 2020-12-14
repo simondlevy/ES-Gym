@@ -14,7 +14,6 @@ import logging
 import os
 import time
 
-from pytorch_es import EvolutionModule
 import gym
 from gym import logger as gym_logger
 import numpy as np
@@ -22,21 +21,8 @@ import torch
 from torch.autograd import Variable
 import torch.nn as nn
 
-class NetWithActfun(nn.Sequential):
-
-    def __init__(self, *args):
-
-        nn.Sequential.__init__(self, *args)
-
-class ArgmaxNet(NetWithActfun):
-
-    def __init__(self, *args):
-
-        NetWithActfun.__init__(self, *args)
-
-    def actfun(self, x):
-
-        return np.argmax(x)
+from pytorch_es import EvolutionModule
+from pytorch_es.nets import ArgmaxNet, ClipNet
 
 def main():
 
@@ -94,7 +80,7 @@ def main():
             if cuda:
                 batch = batch.cuda()
             prediction = cloned_net(Variable(batch))
-            action = net.actfun(prediction.data.numpy())
+            action = net.actfun(prediction.data.numpy()[0])
             ob, reward, done, _ = env.step(action)
 
             total_reward += reward 

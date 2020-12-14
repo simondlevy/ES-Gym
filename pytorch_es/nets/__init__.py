@@ -25,3 +25,13 @@ class ArgmaxNet(_NetWithActfun):
     def actfun(self, x):
 
         return np.argmax(x)
+
+class ClipNet(_NetWithActfun):
+
+    def __init__(self, *args):
+
+        _NetWithActfun.__init__(self, *args)
+
+    def actfun(self, x):
+
+        return np.clip(x, -1, +1)
