@@ -6,11 +6,7 @@ Copyright (C) 2020 Richard Herbert and Simon D. Levy
 MIT License
 '''
 
-#import torch
-#from torch.autograd import Variable
-#import torch.nn as nn
-
-net = nn.Sequential(
+net = ArgmaxNet(
     nn.Linear(4, 100),
     nn.ReLU(True),
     nn.Linear(100, 2),

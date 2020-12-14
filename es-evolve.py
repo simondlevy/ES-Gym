@@ -22,6 +22,22 @@ import torch
 from torch.autograd import Variable
 import torch.nn as nn
 
+class NetWithActfun(nn.Sequential):
+
+    def __init__(self, *args):
+
+        nn.Sequential.__init__(self, *args)
+
+class ArgmaxNet(NetWithActfun):
+
+    def __init__(self, *args):
+
+        NetWithActfun.__init__(self, *args)
+
+    def actfun(self, x):
+
+        return np.argmax(x)
+
 def main():
 
     gym_logger.setLevel(logging.CRITICAL)
@@ -78,7 +94,7 @@ def main():
             if cuda:
                 batch = batch.cuda()
             prediction = cloned_net(Variable(batch))
-            action = prediction.data.numpy().argmax()
+            action = net.actfun(prediction.data.numpy())
             ob, reward, done, _ = env.step(action)
 
             total_reward += reward 

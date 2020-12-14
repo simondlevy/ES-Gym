@@ -13,6 +13,7 @@ import torch
 from torch.autograd import Variable
 import gym
 import numpy as np
+from pytorch_es.nets import ArgmaxNet
 
 def main():
 
@@ -37,7 +38,7 @@ def main():
         time.sleep(0.02)
         batch = torch.from_numpy(ob[np.newaxis,...]).float()
         prediction = net(Variable(batch))
-        action = prediction.data.numpy().argmax()
+        action = net.actfun(prediction.data.numpy())
         ob, reward, done, _ = env.step(action)
 
         total_reward += reward 
