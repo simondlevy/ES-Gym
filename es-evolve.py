@@ -30,6 +30,7 @@ def main():
     parser.add_argument('--env', default='CartPole-v0', help='Environment id')
     parser.add_argument('--cuda', action='store_true', help='Whether or not to use CUDA')
     parser.add_argument('--pop', type=int, default=5, help='Population size')
+    parser.add_argument('--iter', type=int, default=400, help='Iterations')
     parser.add_argument('--sigma', type=float, default=0.1, help='Sigma')
     parser.add_argument('--lr', type=float, default=0.001, help='Learning rate')
     parser.add_argument('--threads', type=int, default=15, help='Thread count')
@@ -93,7 +94,7 @@ def main():
         consecutive_goal_stopping=args.csg
     )
     start = time.time()
-    final_weights = es.run(400)
+    final_weights = es.run(args.iter)
     end = time.time() - start
 
     # Make directory for saving
