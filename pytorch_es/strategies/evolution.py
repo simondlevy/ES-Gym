@@ -22,7 +22,6 @@ class EvolutionModule:
         decay=1.0,
         sigma_decay=1.0,
         threadcount=4,
-        render_test=False,
         cuda=False,
         reward_goal=None,
         consecutive_goal_stopping=None,
@@ -38,7 +37,6 @@ class EvolutionModule:
         self.decay = decay
         self.sigma_decay = sigma_decay
         self.pool = ThreadPool(threadcount)
-        self.render_test = render_test
         self.reward_goal = reward_goal
         self.consecutive_goal_stopping = consecutive_goal_stopping
         self.consecutive_goal_count = 0
@@ -86,8 +84,7 @@ class EvolutionModule:
 
             if (iteration+1) % print_step == 0:
                 test_reward = self.reward_function(
-                    self.jitter_weights(copy.deepcopy(self.weights), no_jitter=True), render=self.render_test
-                )
+                    self.jitter_weights(copy.deepcopy(self.weights), no_jitter=True))
                 print('iter %d. reward: %f' % (iteration+1, test_reward))
 
                 if self.save_path:

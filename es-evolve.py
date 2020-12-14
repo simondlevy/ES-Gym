@@ -63,7 +63,7 @@ def main():
             except:
                 param.data.copy_(weights[i].data)
 
-    def get_reward(weights, net, render=False):
+    def get_reward(weights, net):
 
         cloned_net = copy.deepcopy(net)
 
@@ -74,9 +74,6 @@ def main():
         done = False
         total_reward = 0
         while not done:
-            if render:
-                env.render()
-                time.sleep(0.05)
             batch = torch.from_numpy(ob[np.newaxis,...]).float()
             if cuda:
                 batch = batch.cuda()
@@ -106,9 +103,6 @@ def main():
     filename = 'solutions/%s%+.3f.dat' % (args.env, reward)
     print('Saving %s' % filename)
     torch.save((net,args.env), open(filename, 'wb'))
-
-    #reward = partial_func(final_weights, render=True)
-    #print(f'Reward from final weights: {reward}')
 
 if __name__ == '__main__':
     main()
