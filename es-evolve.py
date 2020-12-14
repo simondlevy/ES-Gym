@@ -46,12 +46,11 @@ def main():
         else:
             print('******* Sorry, CUDA not available *******')
 
-    net = nn.Sequential(
-        nn.Linear(4, 100),
-        nn.ReLU(True),
-        nn.Linear(100, 2),
-        nn.Softmax()
-    )
+    # Run code in script named by environment
+    code = open('./nets/%s.py'% args.env).read() 
+    ldict = {}
+    exec(code, globals(), ldict)
+    net = ldict['net']
 
     if cuda:
         net = net.cuda()
