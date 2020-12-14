@@ -46,8 +46,7 @@ def main():
         else:
             print('******* Sorry, CUDA not available *******')
 
-    # add the model on top of the convolutional base
-    model = nn.Sequential(
+    net = nn.Sequential(
         nn.Linear(4, 100),
         nn.ReLU(True),
         nn.Linear(100, 2),
@@ -55,11 +54,11 @@ def main():
     )
 
     if cuda:
-        model = model.cuda()
+        net = net.cuda()
 
-    def get_reward(weights, model, render=False):
-        cloned_model = copy.deepcopy(model)
-        for i, param in enumerate(cloned_model.parameters()):
+    def get_reward(weights, net, render=False):
+        cloned_net = copy.deepcopy(net)
+        for i, param in enumerate(cloned_net.parameters()):
             try:
                 param.data.copy_(weights[i])
             except:
@@ -76,7 +75,7 @@ def main():
             batch = torch.from_numpy(ob[np.newaxis,...]).float()
             if cuda:
                 batch = batch.cuda()
-            prediction = cloned_model(Variable(batch))
+            prediction = cloned_net(Variable(batch))
             action = prediction.data.numpy().argmax()
             ob, reward, done, _ = env.step(action)
 
@@ -85,22 +84,21 @@ def main():
         env.close()
         return total_reward
         
-    partial_func = partial(get_reward, model=model)
-    mother_parameters = list(model.parameters())
+    partial_func = partial(get_reward, net=net)
+    mother_parameters = list(net.parameters())
 
     es = EvolutionModule(
         mother_parameters, partial_func, population_size=args.pop, sigma=args.sigma, 
         learning_rate=args.lr, threadcount=args.threads, cuda=cuda, reward_goal=args.target,
         consecutive_goal_stopping=args.csg
     )
-    start = time.time()
     final_weights = es.run(args.iter)
 
     # Make directory for saving
-    os.makedirs('models', exist_ok=True)
+    os.makedirs('solutions', exist_ok=True)
 
     reward = partial_func(final_weights)
-    filename = 'models/%s%+.3f' % (args.env, reward)
+    filename = 'solutions/%s%+.3f.dat' % (args.env, reward)
     print('Saving %s' % filename)
     torch.save(final_weights, open(filename, 'wb'))
 
