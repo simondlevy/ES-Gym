@@ -85,7 +85,7 @@ class EvolutionModule:
             if (iteration+1) % print_step == 0:
                 test_reward = self.reward_function(
                     self.jitter_weights(copy.deepcopy(self.weights), no_jitter=True))
-                print('iter %d. reward: %f' % (iteration+1, test_reward))
+                print('iter %6d. reward: %+.3f' % (iteration+1, test_reward))
 
                 if self.save_path:
                     pickle.dump(self.weights, open(self.save_path, 'wb'))

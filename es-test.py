@@ -22,7 +22,7 @@ def main():
     # Load net and environment name from pickled file
     net, env_name = torch.load(open(args.filename, 'rb'))
 
-    print('Total reward = %f ' % run_net(net, env_name, render=True))
+    print('Total reward = %+.3f ' % run_net(net, env_name, render=True))
 
 if __name__ == '__main__':
     main()
