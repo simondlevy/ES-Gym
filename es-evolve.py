@@ -20,12 +20,22 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-w', '--weights_path', type=str, required=True, help='Path to save final weights')
-    parser.add_argument('-c', '--cuda', action='store_true', help='Whether or not to use CUDA')
-    parser.set_defaults(cuda=False)
-
+    parser.add_argument('--cuda', action='store_true', help='Whether or not to use CUDA')
+    parser.add_argument('--pop', type=int, default=5, help='Population size')
+    parser.add_argument('--sigma', type=float, default=0.1, help='Sigma')
+    parser.add_argument('--lr', type=float, default=0.001, help='Learning rate')
+    parser.add_argument('--threads', type=int, default=15, help='Thread count')
+    parser.add_argument('--target', type=float, default=-np.inf, help='Reward target')
+    parser.add_argument('--csg', type=int, default=10, help='Consecutive goal stopping')
     args = parser.parse_args()
 
-    cuda = args.cuda and torch.cuda.is_available()
+    cuda = False
+
+    if args.cuda:
+        if torch.cuda.is_available():
+            cuda = True
+        else:
+            print('Sorry, CUDA not available')
 
     # add the model on top of the convolutional base
     model = nn.Sequential(
@@ -70,9 +80,9 @@ def main():
     mother_parameters = list(model.parameters())
 
     es = EvolutionModule(
-        mother_parameters, partial_func, population_size=5, sigma=0.1, 
-        learning_rate=0.001, threadcount=15, cuda=cuda, reward_goal=200,
-        consecutive_goal_stopping=10
+        mother_parameters, partial_func, population_size=args.pop, sigma=args.sigma, 
+        learning_rate=args.lr, threadcount=args.threads, cuda=cuda, reward_goal=args.target,
+        consecutive_goal_stopping=args.csg
     )
     start = time.time()
     final_weights = es.run(400)
