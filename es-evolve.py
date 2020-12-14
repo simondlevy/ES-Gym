@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+'''
+ES evolver script for OpenAI Gym environemnts
+
+Copyright (C) 2020 Richard Herbert and Simon D. Levy
+
+MIT License
+'''
+
 import argparse
 import copy
 from functools import partial
@@ -35,7 +43,7 @@ def main():
         if torch.cuda.is_available():
             cuda = True
         else:
-            print('Sorry, CUDA not available')
+            print('******* Sorry, CUDA not available *******')
 
     # add the model on top of the convolutional base
     model = nn.Sequential(
