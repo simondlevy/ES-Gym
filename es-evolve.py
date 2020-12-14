@@ -26,7 +26,7 @@ def main():
 
     gym_logger.setLevel(logging.CRITICAL)
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--env', default='CartPole-v0', help='Environment id')
     parser.add_argument('--cuda', action='store_true', help='Whether or not to use CUDA')
     parser.add_argument('--pop', type=int, default=5, help='Population size')
