@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+
+'''
+Python distutils setup file for es-gym module.
+
+Copyright (C) 2021 Simon D. Levy
+
+MIT License
+'''
+
 from setuptools import setup
 
 setup(
@@ -8,5 +18,6 @@ setup(
     author='Richard Herbert and Simon D. Levy',
     author_email='richard.alan.herbert@gmail.com',
     packages=['pytorch_es', 'pytorch_es.strategies', 'pytorch_es.utils'],
-    keywords=["machine learning", "ai", "evolutionary strategies", "reinforcement learning", "pytorch"],
+    keywords=['machine learning', 'ai', 'evolutionary strategies',
+              'reinforcement learning', 'pytorch']
 )
