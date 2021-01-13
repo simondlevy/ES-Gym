@@ -25,8 +25,6 @@ flake:
 	flake8 setup.py
 	flake8 es-evolve.py
 	flake8 es-test.py
-	flake8 nets/*.py
-	flake8 nets/*.py
 	flake8 pytorch_es/*.py
 	flake8 pytorch_es/nets/*.py
 	flake8 pytorch_es/strategies/*.py

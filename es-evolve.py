@@ -18,7 +18,7 @@ from gym import logger as gym_logger
 import numpy as np
 
 import torch
-import torch.nn as nn
+import torch.nn as nn  # noqa: F401
 
 from pytorch_es import EvolutionModule
 from pytorch_es.utils.helpers import run_net
