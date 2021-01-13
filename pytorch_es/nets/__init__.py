@@ -10,11 +10,13 @@ MIT License
 import numpy as np
 import torch.nn as nn
 
+
 class _NetWithActfun(nn.Sequential):
 
     def __init__(self, *args):
 
         nn.Sequential.__init__(self, *args)
+
 
 class ArgMaxNet(_NetWithActfun):
 
@@ -25,6 +27,7 @@ class ArgMaxNet(_NetWithActfun):
     def actfun(self, x):
 
         return np.argmax(x)
+
 
 class ClipNet(_NetWithActfun):
 

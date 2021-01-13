@@ -1,6 +1,7 @@
-"""
-Evolutionary Strategies module for PyTorch models -- modified from https://github.com/alirezamika/evostra
-"""
+'''
+Evolutionary Strategies module for PyTorch models -- modified from
+https://github.com/alirezamika/evostra
+'''
 import copy
 from multiprocessing.pool import ThreadPool
 import pickle
@@ -13,8 +14,8 @@ import torch
 class EvolutionModule:
 
     def __init__(
-        self, 
-        weights, 
+        self,
+        weights,
         reward_func,
         population_size=50,
         sigma=0.1,
@@ -42,19 +43,18 @@ class EvolutionModule:
         self.consecutive_goal_count = 0
         self.save_path = save_path
 
-
     def jitter_weights(self, weights, population=[], no_jitter=False):
         new_weights = []
         for i, param in enumerate(weights):
             if no_jitter:
                 new_weights.append(param.data)
             else:
-                jittered = torch.from_numpy(self.SIGMA * population[i]).float()
+                jittered = torch.from_numpy(self.SIGMA *
+                                            population[i]).float()
                 if self.cuda:
                     jittered = jittered.cuda()
                 new_weights.append(param.data + jittered)
         return new_weights
-
 
     def run(self, iterations, print_step=10):
         for iteration in range(iterations):
@@ -67,36 +67,44 @@ class EvolutionModule:
                 population.append(x)
 
             rewards = self.pool.map(
-                self.reward_function, 
-                [self.jitter_weights(copy.deepcopy(self.weights), population=pop) for pop in population]
+                self.reward_function,
+                [self.jitter_weights(copy.deepcopy(self.weights),
+                                     population=pop) for pop in population]
             )
             if np.std(rewards) != 0:
-                normalized_rewards = (rewards - np.mean(rewards)) / np.std(rewards)
+                normalized_rewards = ((rewards - np.mean(rewards)) /
+                                      np.std(rewards))
                 for index, param in enumerate(self.weights):
                     A = np.array([p[index] for p in population])
-                    rewards_pop = torch.from_numpy(np.dot(A.T, normalized_rewards).T).float()
+                    rewards_pop = (
+                            torch.from_numpy(np.dot(A.T,
+                                             normalized_rewards).T).float())
                     if self.cuda:
                         rewards_pop = rewards_pop.cuda()
-                    param.data = param.data + self.LEARNING_RATE / (self.POPULATION_SIZE * self.SIGMA) * rewards_pop
+                    param.data = (param.data + self.LEARNING_RATE /
+                                  (self.POPULATION_SIZE * self.SIGMA) *
+                                  rewards_pop)
 
                     self.LEARNING_RATE *= self.decay
                     self.SIGMA *= self.sigma_decay
 
             if (iteration+1) % print_step == 0:
                 test_reward = self.reward_function(
-                    self.jitter_weights(copy.deepcopy(self.weights), no_jitter=True))
+                    self.jitter_weights(copy.deepcopy(self.weights),
+                                        no_jitter=True))
                 print('iter %6d. reward: %+.3f' % (iteration+1, test_reward))
 
                 if self.save_path:
                     pickle.dump(self.weights, open(self.save_path, 'wb'))
-                
+
                 if self.reward_goal and self.consecutive_goal_stopping:
                     if test_reward >= self.reward_goal:
                         self.consecutive_goal_count += 1
                     else:
                         self.consecutive_goal_count = 0
 
-                    if self.consecutive_goal_count >= self.consecutive_goal_stopping:
+                    if (self.consecutive_goal_count >=
+                            self.consecutive_goal_stopping):
                         return self.weights
 
         return self.weights
