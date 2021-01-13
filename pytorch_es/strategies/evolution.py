@@ -4,6 +4,7 @@ https://github.com/alirezamika/evostra
 '''
 import copy
 from multiprocessing.pool import ThreadPool
+import multiprocessing as mp
 import pickle
 import time
 
@@ -22,7 +23,6 @@ class EvolutionModule:
         learning_rate=0.001,
         decay=1.0,
         sigma_decay=1.0,
-        threadcount=4,
         cuda=False,
         reward_goal=None,
         consecutive_goal_stopping=None,
@@ -37,7 +37,7 @@ class EvolutionModule:
         self.cuda = cuda
         self.decay = decay
         self.sigma_decay = sigma_decay
-        self.pool = ThreadPool(threadcount)
+        self.pool = ThreadPool(mp.cpu_count())
         self.reward_goal = reward_goal
         self.consecutive_goal_stopping = consecutive_goal_stopping
         self.consecutive_goal_count = 0

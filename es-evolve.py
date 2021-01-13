@@ -90,7 +90,6 @@ def main():
         population_size=args.pop,
         sigma=args.sigma,
         learning_rate=args.lr,
-        threadcount=args.threads,
         cuda=cuda,
         reward_goal=args.target,
         consecutive_goal_stopping=args.csg)
