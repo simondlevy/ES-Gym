@@ -14,7 +14,6 @@ import logging
 import os
 import multiprocessing as mp
 from multiprocessing.pool import ThreadPool
-import pickle
 import time
 
 from gym import logger as gym_logger
@@ -37,6 +36,7 @@ class EvolutionModule:
         self,
         weights,
         reward_func,
+        checkpoint=False,
         population_size=50,
         sigma=0.1,
         learning_rate=0.001,
@@ -45,7 +45,6 @@ class EvolutionModule:
         cuda=False,
         reward_goal=None,
         consecutive_goal_stopping=None,
-        save_path=None
     ):
         np.random.seed(int(time.time()))
         self.weights = weights
@@ -60,7 +59,7 @@ class EvolutionModule:
         self.reward_goal = reward_goal
         self.consecutive_goal_stopping = consecutive_goal_stopping
         self.consecutive_goal_count = 0
-        self.save_path = save_path
+        self.checkpoint = checkpoint
 
     def jitter_weights(self, weights, population=[], no_jitter=False):
         new_weights = []
@@ -75,7 +74,7 @@ class EvolutionModule:
                 new_weights.append(param.data + jittered)
         return new_weights
 
-    def run(self, iterations, target, print_step=1):
+    def run(self, iterations, target, report_step=1):
 
         total_steps = 0
 
@@ -88,7 +87,6 @@ class EvolutionModule:
                     x.append(np.random.randn(*param.data.size()))
                 population.append(x)
 
-            
             results = self.pool.map(
                 self.reward_function,
                 [self.jitter_weights(copy.deepcopy(self.weights),
@@ -114,7 +112,7 @@ class EvolutionModule:
                     self.LEARNING_RATE *= self.decay
                     self.SIGMA *= self.sigma_decay
 
-            if (iteration+1) % print_step == 0:
+            if (iteration+1) % report_step == 0:
 
                 test_reward, steps = self.reward_function(
                     self.jitter_weights(copy.deepcopy(self.weights),
@@ -122,7 +120,8 @@ class EvolutionModule:
 
                 total_steps += steps
 
-                print('Iteration %07d:\treward = %+6.3f%s  \tevaluations = %d' %
+                print('Iteration %07d:\treward = %+6.3f%s  \tevaluations = %d'
+                      %
                       (iteration+1,
                        test_reward,
                        ' *'
@@ -130,8 +129,8 @@ class EvolutionModule:
                        else '',
                        steps))
 
-                if self.save_path:
-                    pickle.dump(self.weights, open(self.save_path, 'wb'))
+                # if self.checkpoint:
+                #    pickle.dump(self.weights, open(, 'wb'))
 
                 if self.reward_goal and self.consecutive_goal_stopping:
                     if test_reward >= self.reward_goal:
@@ -160,6 +159,8 @@ def main():
     parser.add_argument('--iter', type=int, default=400, help='Iterations')
     parser.add_argument('--seed', type=int, required=False,
                         help='Seed for random number generator')
+    parser.add_argument('--checkpoint', action='store_true',
+                        help='Save at each new best')
     parser.add_argument('--sigma', type=float, default=0.1, help='Sigma')
     parser.add_argument('--lr', type=float, default=0.001,
                         help='Learning rate')
@@ -219,6 +220,7 @@ def main():
     es = EvolutionModule(
         mother_parameters,
         partial_func,
+        checkpoint=args.checkpoint,
         population_size=args.pop,
         sigma=args.sigma,
         learning_rate=args.lr,
@@ -226,10 +228,11 @@ def main():
         reward_goal=target,
         consecutive_goal_stopping=args.csg)
 
+    os.makedirs('models', exist_ok=True)
+
     final_weights, total_steps = es.run(args.iter, target)
 
     # Save final weights in a new network, along with environment name
-    os.makedirs('models', exist_ok=True)
     reward = partial_func(final_weights)[0]
     copy_weights_to_net(final_weights, net)
     filename = 'models/%s%+.3f.dat' % (args.env, reward)
