@@ -33,4 +33,3 @@ flake:
 	flake8 es-test.py
 	flake8 es_gym/*.py
 	flake8 es_gym/nets/*.py
-	flake8 es_gym/strategies/*.py
