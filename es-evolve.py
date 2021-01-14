@@ -75,7 +75,8 @@ class EvolutionModule:
                 new_weights.append(param.data + jittered)
         return new_weights
 
-    def run(self, iterations, print_step=10):
+    def run(self, iterations, print_step=1):
+
         for iteration in range(iterations):
 
             population = []
@@ -146,7 +147,7 @@ def main():
     parser.add_argument('--sigma', type=float, default=0.1, help='Sigma')
     parser.add_argument('--lr', type=float, default=0.001,
                         help='Learning rate')
-    parser.add_argument('--target', type=float, default=-np.inf,
+    parser.add_argument('--target', type=float, default=None,
                         help='Reward target')
     parser.add_argument('--csg', type=int, default=10,
                         help='Consecutive goal stopping')
