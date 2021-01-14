@@ -86,11 +86,15 @@ class EvolutionModule:
                     x.append(np.random.randn(*param.data.size()))
                 population.append(x)
 
-            rewards = self.pool.map(
+            
+            results = self.pool.map(
                 self.reward_function,
                 [self.jitter_weights(copy.deepcopy(self.weights),
                                      population=pop) for pop in population]
             )
+
+            rewards = [r[0] for r in results]
+
             if np.std(rewards) != 0:
                 normalized_rewards = ((rewards - np.mean(rewards)) /
                                       np.std(rewards))
@@ -109,16 +113,18 @@ class EvolutionModule:
                     self.SIGMA *= self.sigma_decay
 
             if (iteration+1) % print_step == 0:
-                test_reward = self.reward_function(
+
+                test_reward, steps = self.reward_function(
                     self.jitter_weights(copy.deepcopy(self.weights),
                                         no_jitter=True))
 
-                print('iter %6d. reward: %+.3f %s' %
+                print('Iteration %07d:\treward = %+.3f%s,\tevaluations = %d' %
                       (iteration+1,
                        test_reward,
-                       '*'
+                       ' *'
                        if (target is not None) and (test_reward >= target)
-                       else ''))
+                       else '',
+                       steps))
 
                 if self.save_path:
                     pickle.dump(self.weights, open(self.save_path, 'wb'))
@@ -220,7 +226,7 @@ def main():
 
     # Save final weights in a new network, along with environment name
     os.makedirs('models', exist_ok=True)
-    reward = partial_func(final_weights)
+    reward = partial_func(final_weights)[0]
     copy_weights_to_net(final_weights, net)
     filename = 'models/%s%+.3f.dat' % (args.env, reward)
     print('Saving %s' % filename)

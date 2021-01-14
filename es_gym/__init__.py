@@ -67,4 +67,4 @@ def eval_net(net, env_name, render=False, seed=None, report=False):
     if report:
         print('Got reward %+6.6f in %d steps' % (total_reward, steps))
 
-    return total_reward
+    return total_reward, steps
