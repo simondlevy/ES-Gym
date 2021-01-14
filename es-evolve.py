@@ -27,6 +27,12 @@ from es_gym import eval_net
 from es_gym import ArgMaxNet, ClipNet  # noqa: F401
 
 
+def _save_net(net, env_name, reward):
+    filename = 'models/%s%+.3f.dat' % (env_name, reward)
+    print('Saving %s' % filename)
+    torch.save((net, env_name), open(filename, 'wb'))
+
+
 def _copy_weights_to_net(weights, net):
 
     for i, param in enumerate(net.parameters()):
@@ -208,11 +214,8 @@ def main():
         net = net.cuda()
 
     def get_reward(weights, net):
-
         cloned_net = copy.deepcopy(net)
-
         _copy_weights_to_net(weights, cloned_net)
-
         return eval_net(cloned_net, args.env, seed=args.seed)
 
     partial_func = partial(get_reward, net=net)
@@ -238,9 +241,7 @@ def main():
     # Save final weights in a new network, along with environment name
     reward = partial_func(final_weights)[0]
     _copy_weights_to_net(final_weights, net)
-    filename = 'models/%s%+.3f.dat' % (args.env, reward)
-    print('Saving %s' % filename)
-    torch.save((net, args.env), open(filename, 'wb'))
+    _save_net(net, args.env, reward)
 
 
 if __name__ == '__main__':
