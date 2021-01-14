@@ -28,8 +28,9 @@ def main():
     # Load net and environment name from pickled file
     net, env_name = torch.load(open(args.filename, 'rb'))
 
-    print('Total reward = %+.3f ' %
-          eval_net(net, env_name, render=not args.nodisplay, seed=args.seed))
+    # Evaluate the network
+    eval_net(net, env_name,
+             render=not args.nodisplay, seed=args.seed, report=True)
 
 
 if __name__ == '__main__':

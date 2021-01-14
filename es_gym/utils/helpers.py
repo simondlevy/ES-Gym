@@ -13,7 +13,7 @@ def weights_init(m):
         m.weight.data.normal_(0.0, 0.02)
 
 
-def eval_net(net, env_name, render=False, seed=None):
+def eval_net(net, env_name, render=False, seed=None, report=False):
 
     # Make environment from name
     env = gym.make(env_name)
@@ -24,6 +24,8 @@ def eval_net(net, env_name, render=False, seed=None):
     ob = env.reset()
     done = False
     total_reward = 0
+    steps = 0
+
     while not done:
         if render:
             env.render()
@@ -32,8 +34,12 @@ def eval_net(net, env_name, render=False, seed=None):
         prediction = net(Variable(batch))
         action = net.actfun(prediction.data.numpy()[0])
         ob, reward, done, _ = env.step(action)
-
         total_reward += reward
+        steps += 1
+
     env.close()
+
+    if report:
+        print('Got reward %+6.6f in %d steps' % (total_reward, steps))
 
     return total_reward
