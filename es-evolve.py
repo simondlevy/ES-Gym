@@ -20,8 +20,8 @@ import numpy as np
 import torch
 import torch.nn as nn  # noqa: F401
 
-from es_gym import EvolutionModule
-from es_gym.utils.helpers import eval_net
+from es_gym import eval_net
+from es_gym.strategies.evolution import EvolutionModule
 from es_gym.nets import ArgMaxNet, ClipNet  # noqa: F401
 
 

@@ -17,7 +17,7 @@ setup(
     url='https://github.com/simondlevy/PyTorch-ES',
     author='Richard Herbert and Simon D. Levy',
     author_email='richard.alan.herbert@gmail.com',
-    packages=['es_gym', 'es_gym.strategies', 'es_gym.utils'],
+    packages=['es_gym', 'es_gym.strategies'],
     keywords=['machine learning', 'ai', 'evolutionary strategies',
               'reinforcement learning', 'pytorch']
 )

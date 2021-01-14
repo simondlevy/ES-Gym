@@ -22,7 +22,7 @@ help:
 	./es-evolve.py --help
 
 clean:
-	sudo rm -rf build/ dist/ *.egg-info __pycache__ */__pycache__ models/
+	sudo rm -rf build/ dist/ *.egg-info __pycache__ */__pycache__ */*/__pycache__ models/
 
 commit:
 	git commit -a
@@ -34,4 +34,3 @@ flake:
 	flake8 es_gym/*.py
 	flake8 es_gym/nets/*.py
 	flake8 es_gym/strategies/*.py
-	flake8 es_gym/utils/*.py

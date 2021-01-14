@@ -9,7 +9,7 @@ MIT License
 
 import argparse
 import torch
-from es_gym.utils.helpers import eval_net
+from es_gym import eval_net
 
 
 def main():
