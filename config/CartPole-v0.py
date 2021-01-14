@@ -1,5 +1,5 @@
 '''
-PyTorch network for CartPole-v0
+Network configuration for CartPole-v0
 
 Copyright (C) 2020 Richard Herbert and Simon D. Levy
 

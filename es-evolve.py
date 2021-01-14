@@ -166,7 +166,7 @@ def main():
         torch.manual_seed(args.seed)
 
     # Run code in script named by environment
-    code = open('./nets/%s.py' % args.env).read()
+    code = open('./config/%s.py' % args.env).read()
     ldict = {}
     exec(code, globals(), ldict)
     net = ldict['net']
