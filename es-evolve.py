@@ -25,7 +25,7 @@ import torch
 import torch.nn as nn  # noqa: F401
 
 from es_gym import eval_net
-from es_gym.nets import ArgMaxNet, ClipNet  # noqa: F401
+from es_gym import ArgMaxNet, ClipNet  # noqa: F401
 
 
 class EvolutionModule:

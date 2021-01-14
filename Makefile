@@ -11,7 +11,7 @@ install:
 
 test:
 	rm -rf models/
-	./es-evolve.py
+	./es-evolve.py --target 200
 	./es-test.py models/*
 
 edit:
