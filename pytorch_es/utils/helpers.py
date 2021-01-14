@@ -13,10 +13,12 @@ def weights_init(m):
         m.weight.data.normal_(0.0, 0.02)
 
 
-def run_net(net, env_name, render=False):
+def eval_net(net, env_name, render=False, seed=None):
 
     # Make environment from name
     env = gym.make(env_name)
+
+    env.seed(seed)
 
     # Run net on environment
     ob = env.reset()

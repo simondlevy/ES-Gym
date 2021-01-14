@@ -12,8 +12,14 @@ install:
 evo:
 	./es-evolve.py
 
+seed:
+	./es-evolve.py --seed 0 --iter 20
+
 edit:
 	vim es-evolve.py
+
+help:
+	./es-evolve.py --help
 
 clean:
 	sudo rm -rf build/ dist/ *.egg-info __pycache__ */__pycache__ models/

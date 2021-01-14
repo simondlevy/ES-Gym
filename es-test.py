@@ -9,7 +9,7 @@ MIT License
 
 import argparse
 import torch
-from pytorch_es.utils.helpers import run_net
+from pytorch_es.utils.helpers import eval_net
 
 
 def main():
@@ -24,7 +24,7 @@ def main():
     # Load net and environment name from pickled file
     net, env_name = torch.load(open(args.filename, 'rb'))
 
-    print('Total reward = %+.3f ' % run_net(net, env_name, render=True))
+    print('Total reward = %+.3f ' % eval_net(net, env_name, render=True))
 
 
 if __name__ == '__main__':

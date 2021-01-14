@@ -21,7 +21,7 @@ import torch
 import torch.nn as nn  # noqa: F401
 
 from pytorch_es import EvolutionModule
-from pytorch_es.utils.helpers import run_net
+from pytorch_es.utils.helpers import eval_net
 from pytorch_es.nets import ArgMaxNet, ClipNet  # noqa: F401
 
 
@@ -37,6 +37,8 @@ def main():
                         help='Whether or not to use CUDA')
     parser.add_argument('--pop', type=int, default=64, help='Population size')
     parser.add_argument('--iter', type=int, default=400, help='Iterations')
+    parser.add_argument('--seed', type=int, required=False,
+                        help='Seed for random number generator')
     parser.add_argument('--sigma', type=float, default=0.1, help='Sigma')
     parser.add_argument('--lr', type=float, default=0.001,
                         help='Learning rate')
@@ -55,6 +57,9 @@ def main():
             cuda = True
         else:
             print('******* Sorry, CUDA not available *******')
+
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
 
     # Run code in script named by environment
     code = open('./nets/%s.py' % args.env).read()
@@ -79,7 +84,7 @@ def main():
 
         copy_weights_to_net(weights, cloned_net)
 
-        return run_net(cloned_net, args.env)
+        return eval_net(cloned_net, args.env, seed=args.seed)
 
     partial_func = partial(get_reward, net=net)
     mother_parameters = list(net.parameters())
