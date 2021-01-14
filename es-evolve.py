@@ -20,9 +20,9 @@ import numpy as np
 import torch
 import torch.nn as nn  # noqa: F401
 
-from pytorch_es import EvolutionModule
-from pytorch_es.utils.helpers import eval_net
-from pytorch_es.nets import ArgMaxNet, ClipNet  # noqa: F401
+from es_gym import EvolutionModule
+from es_gym.utils.helpers import eval_net
+from es_gym.nets import ArgMaxNet, ClipNet  # noqa: F401
 
 
 def main():
