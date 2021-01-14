@@ -9,11 +9,10 @@
 install:
 	sudo python3 setup.py install
 
-evo:
+test:
+	rm -rf models/
 	./es-evolve.py
-
-seed:
-	./es-evolve.py --seed 0 --iter 20
+	./es-test.py models/*
 
 edit:
 	vim es-evolve.py
