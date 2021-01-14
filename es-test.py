@@ -21,12 +21,15 @@ def main():
                         help='If specified, sets the recording dir')
     parser.add_argument('--seed', type=int, required=False,
                         help='Seed for random number generator')
+    parser.add_argument('--nodisplay', dest='nodisplay', action='store_true',
+                        help='Suppress display')
     args = parser.parse_args()
 
     # Load net and environment name from pickled file
     net, env_name = torch.load(open(args.filename, 'rb'))
 
-    print('Total reward = %+.3f ' % eval_net(net, env_name, render=True, seed=args.seed))
+    print('Total reward = %+.3f ' %
+          eval_net(net, env_name, render=not args.nodisplay, seed=args.seed))
 
 
 if __name__ == '__main__':
