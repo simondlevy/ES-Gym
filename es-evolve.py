@@ -77,6 +77,8 @@ class EvolutionModule:
 
     def run(self, iterations, target, print_step=1):
 
+        total_steps = 0
+
         for iteration in range(iterations):
 
             population = []
@@ -118,6 +120,8 @@ class EvolutionModule:
                     self.jitter_weights(copy.deepcopy(self.weights),
                                         no_jitter=True))
 
+                total_steps += steps
+
                 print('Iteration %07d:\treward = %+6.3f%s  \tevaluations = %d' %
                       (iteration+1,
                        test_reward,
@@ -139,7 +143,7 @@ class EvolutionModule:
                             self.consecutive_goal_stopping):
                         return self.weights
 
-        return self.weights
+        return self.weights, total_steps
 
 
 def main():
@@ -222,13 +226,14 @@ def main():
         reward_goal=target,
         consecutive_goal_stopping=args.csg)
 
-    final_weights = es.run(args.iter, target)
+    final_weights, total_steps = es.run(args.iter, target)
 
     # Save final weights in a new network, along with environment name
     os.makedirs('models', exist_ok=True)
     reward = partial_func(final_weights)[0]
     copy_weights_to_net(final_weights, net)
     filename = 'models/%s%+.3f.dat' % (args.env, reward)
+    print('Total evaluations = %d' % total_steps)
     print('Saving %s' % filename)
     torch.save((net, args.env), open(filename, 'wb'))
 
