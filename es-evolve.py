@@ -42,8 +42,6 @@ def main():
     parser.add_argument('--sigma', type=float, default=0.1, help='Sigma')
     parser.add_argument('--lr', type=float, default=0.001,
                         help='Learning rate')
-    parser.add_argument('--threads', type=int, default=15,
-                        help='Thread count')
     parser.add_argument('--target', type=float, default=-np.inf,
                         help='Reward target')
     parser.add_argument('--csg', type=int, default=10,
@@ -59,7 +57,8 @@ def main():
             print('******* Sorry, CUDA not available *******')
 
     np.random.seed(args.seed)
-    torch.manual_seed(args.seed)
+    if args.seed is not None:
+        torch.manual_seed(args.seed)
 
     # Run code in script named by environment
     code = open('./nets/%s.py' % args.env).read()
