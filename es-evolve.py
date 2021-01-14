@@ -75,7 +75,7 @@ class EvolutionModule:
                 new_weights.append(param.data + jittered)
         return new_weights
 
-    def run(self, iterations, print_step=1):
+    def run(self, iterations, target, print_step=1):
 
         for iteration in range(iterations):
 
@@ -112,7 +112,13 @@ class EvolutionModule:
                 test_reward = self.reward_function(
                     self.jitter_weights(copy.deepcopy(self.weights),
                                         no_jitter=True))
-                print('iter %6d. reward: %+.3f' % (iteration+1, test_reward))
+
+                print('iter %6d. reward: %+.3f %s' %
+                      (iteration+1,
+                       test_reward,
+                       '*'
+                       if (target is not None) and (test_reward >= target)
+                       else ''))
 
                 if self.save_path:
                     pickle.dump(self.weights, open(self.save_path, 'wb'))
@@ -171,6 +177,13 @@ def main():
     exec(code, globals(), ldict)
     net = ldict['net']
 
+    # If target was specified on command line, use it; otherwise, check for
+    # target in config file; if found, use it.
+    target = (args.target if args.target is not None
+              else ldict['target'] if 'target' in ldict
+              else None)
+
+    # Convert net to CUDA format if specified and avaialble
     if cuda:
         net = net.cuda()
 
@@ -200,10 +213,10 @@ def main():
         sigma=args.sigma,
         learning_rate=args.lr,
         cuda=cuda,
-        reward_goal=args.target,
+        reward_goal=target,
         consecutive_goal_stopping=args.csg)
 
-    final_weights = es.run(args.iter)
+    final_weights = es.run(args.iter, target)
 
     # Save final weights in a new network, along with environment name
     os.makedirs('models', exist_ok=True)

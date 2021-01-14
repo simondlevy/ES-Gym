@@ -11,7 +11,7 @@ install:
 
 test:
 	rm -rf models/
-	./es-evolve.py --target 200
+	./es-evolve.py
 	./es-test.py models/*
 
 edit:
@@ -31,4 +31,3 @@ flake:
 	flake8 es-evolve.py
 	flake8 es-test.py
 	flake8 es_gym/*.py
-	flake8 es_gym/nets/*.py
