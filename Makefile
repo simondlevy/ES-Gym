@@ -10,7 +10,7 @@ install:
 	sudo python3 setup.py install
 
 quick:
-	./es-evolve.py --iter 1
+	./es-evolve.py --iter 5
 
 test:
 	rm -rf models/

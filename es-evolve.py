@@ -118,7 +118,7 @@ class EvolutionModule:
                     self.jitter_weights(copy.deepcopy(self.weights),
                                         no_jitter=True))
 
-                print('Iteration %07d:\treward = %+.3f%s\t\tevaluations = %d' %
+                print('Iteration %07d:\treward = %+6.3f%s  \tevaluations = %d' %
                       (iteration+1,
                        test_reward,
                        ' *'
