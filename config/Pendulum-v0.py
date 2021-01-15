@@ -8,9 +8,9 @@ MIT License
 
 # This code gets run by exec() in es-evolve.py, so there are no imports here
 net = ClipNet(
-            nn.Linear(3, 200),
+            nn.Linear(3, 64),
             nn.Tanh(),
-            nn.Linear(200, 200),
+            nn.Linear(64, 64),
             nn.Tanh(),
-            nn.Linear(200, 1),
+            nn.Linear(64, 1),
             nn.Tanh())
