@@ -51,7 +51,7 @@ class EvolutionModule:
         self,
         weights,
         reward_func,
-        checkpoint=False,
+        save_name=None,
         population_size=50,
         sigma=0.1,
         learning_rate=0.001,
@@ -74,7 +74,7 @@ class EvolutionModule:
         self.reward_goal = reward_goal
         self.consecutive_goal_stopping = consecutive_goal_stopping
         self.consecutive_goal_count = 0
-        self.checkpoint = checkpoint
+        self.save_name = save_name
 
     def jitter_weights(self, weights, population=[], no_jitter=False):
         new_weights = []
@@ -92,6 +92,7 @@ class EvolutionModule:
     def run(self, iterations, target, report_step=1):
 
         total_steps = 0
+        best_reward = -np.inf
 
         for iteration in range(iterations):
 
@@ -129,7 +130,7 @@ class EvolutionModule:
 
             if (iteration+1) % report_step == 0:
 
-                test_reward, steps = self.reward_function(
+                test_reward, steps, net = self.reward_function(
                     self.jitter_weights(copy.deepcopy(self.weights),
                                         no_jitter=True))
 
@@ -144,8 +145,10 @@ class EvolutionModule:
                        else '',
                        steps))
 
-                # if self.checkpoint:
-                #    pickle.dump(self.weights, open(, 'wb'))
+                if test_reward > best_reward:
+                    best_reward = test_reward
+                    if self.save_name is not None:
+                        _save_net(net, self.save_name, test_reward)
 
                 if self.reward_goal and self.consecutive_goal_stopping:
                     if test_reward >= self.reward_goal:
@@ -224,13 +227,13 @@ def main():
     es = EvolutionModule(
         mother_parameters,
         partial_func,
-        checkpoint=args.checkpoint,
         population_size=args.pop,
         sigma=args.sigma,
         learning_rate=args.lr,
         cuda=cuda,
         reward_goal=target,
-        consecutive_goal_stopping=args.csg)
+        consecutive_goal_stopping=args.csg,
+        save_name=(args.env if args.checkpoint is not None else None))
 
     os.makedirs('models', exist_ok=True)
 
