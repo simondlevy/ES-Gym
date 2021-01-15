@@ -233,7 +233,7 @@ def main():
         cuda=cuda,
         reward_goal=target,
         consecutive_goal_stopping=args.csg,
-        save_name=(args.env if args.checkpoint is not None else None))
+        save_name=(args.env if args.checkpoint else None))
 
     os.makedirs('models', exist_ok=True)
 
